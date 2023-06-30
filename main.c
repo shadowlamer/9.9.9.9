@@ -1,29 +1,58 @@
 #include <string.h>
 
+#include "scr_addr.h"
+#include "font.h"
 #include "assets.h"
-
-#define SCREEN_BUFFER_START      0x4000
-#define ATTR_SCREEN_BUFFER_START 0x5800
 
 __at (SCREEN_BUFFER_START) char screen_buf[0x1800];
 __at (ATTR_SCREEN_BUFFER_START) char screen_attr_buf[0x300];
+__at (EMBEDDED_FONT_START) char font0[];
 
 void unpack(char *src, char *dst);
 void delay(unsigned int interval);
-
+void print(char *s, unsigned char x, unsigned char y);
+  
 void main() {
   for (;;) {
+    memset(screen_buf + 0x1000, 0x00, 0x800);
     memset(screen_attr_buf, 0x00, 0x200);
     unpack(boy1_img, screen_buf);
     unpack(boy1_atr, screen_attr_buf);
-    delay(80);
+    print("Вот\\ это\\ да\\,\\ какие\\ красивые\\ здания\\!\\ Это\\ же\\ Пермь\\,\\ город\\ с\\ богатой\\ историей\\.", 0, 17);
+    delay(200);
 
+    memset(screen_buf + 0x1000, 0x00, 0x800);
     memset(screen_attr_buf, 0x00, 0x200);
     unpack(teller1_img, screen_buf);
     unpack(teller1_atr, screen_attr_buf);
-    delay(80);
+    print("Здравствуй\\,\\ молодой\\ путешественник\\.\\ Вижу\\,\\ что\\ ты\\ ищешь\\ что\\-то\\ особенное\\.", 0, 17);
+    delay(200);
   }
 }
+
+void print(char *s, unsigned char x, unsigned char y) {
+  char *p_scr = (char *)screen_line_addrs[y * 8];
+  char const *p_font = font1 - (0x10 * 8);
+
+  p_scr += x;
+  for (; *s!=0; s++) {
+    char const *p_char;
+    
+    if (*s == '\\') {
+      p_font  = font0;
+      continue;
+    }
+    
+    p_char = p_font + (*s * 8);
+    
+    for (unsigned char i = 0; i < 8; i++) {
+      *(p_scr + i * 256) = *p_char;
+      p_char++;
+    }
+    p_scr++;
+    p_font = font1 - (0x10 * 8);
+  }                                                                                                                                                                                                                
+}                                                                                                                                                                                                                  
 
 void unpack(char *src, char *dst) {
 (void) src, dst;
@@ -113,3 +142,4 @@ void delay(unsigned int interval) {
     __endasm;	  	
   }
 }
+
