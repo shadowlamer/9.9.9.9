@@ -1,7 +1,5 @@
-#ifndef __FONT1_H
-#define __FONT1_H
-
-#define EMBEDDED_FONT_START 0x3c00
+#ifndef __FONT_H
+#define __FONT_H
 
 static const unsigned char font[] = {/*{w:8,h:8,bpp:1,brev:1,count:80}*/
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -87,7 +85,7 @@ static const unsigned char font[] = {/*{w:8,h:8,bpp:1,brev:1,count:80}*/
 };
 
 static const unsigned char font_width[] = {
-  4, //  
+  3, //  
   2, // |
   4, // "
   4, // #
@@ -162,7 +160,7 @@ static const unsigned char font_width[] = {
   4, // ш
   4, // щ
   4, // ъ
-  4, // ы
+  7, // ы
   4, // ь
   4, // э
   4, // ю
@@ -170,4 +168,4 @@ static const unsigned char font_width[] = {
 };
 
 
-#endif //__FONT1_H
+#endif //__FONT_H

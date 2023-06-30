@@ -4,30 +4,95 @@
 #include "font.h"
 #include "assets.h"
 
+#define STORY_SIZE 9
+
+typedef struct {                                                                                                                                                                                                   
+  unsigned char *img;
+  unsigned char *atr;
+  char *text;
+  unsigned int delay;
+} slide_struct_t;     
+
 __at (SCREEN_BUFFER_START) char screen_buf[0x1800];
 __at (ATTR_SCREEN_BUFFER_START) char screen_attr_buf[0x300];
-__at (EMBEDDED_FONT_START) char font0[];
+
+static const slide_struct_t story[] = {
+  {
+    .img = boy1_img,
+    .atr = boy1_atr,
+    .text = "Вот\\ это\\ да\\,\\ какие\\ красивые\\ здания\\!\\ Это\\ же\\ Пермь\\,\\ город\\ с\\ богатой\\ историей\\.",
+    .delay = 200
+  },
+  {
+    .img = teller1_img,
+    .atr = teller1_atr,
+    .text = "Здравствуй\\,\\ молодой\\ путешественник\\.\\ Вижу\\,\\ что\\ ты\\ ищешь\\ что\\-то\nособенное\\.",
+    .delay = 200
+  },
+  {
+    .img = boy1_img,
+    .atr = boy1_atr,
+    .text = "Да\\,\\ точно\\!\\ Я\\ хочу\\ открыть\\ для\\ себя\\ все\\ тайны\\ и\\ легенды\\ Перми\\.\\ Я\\ иду\\ искать\\ приключения\\!",
+    .delay = 200
+  },
+  {
+    .img = teller1_img,
+    .atr = teller1_atr,
+    .text = "Мудрая\\ цель\\,\\ молодой\\ человек\\.\\ Слушай\\,\\ у\\ меня\\ есть\\ предчувствие\\,\\ что\\ тебя\\ ждет\\ великое\\ свидание\\,\\ связанное\\ с\\ уральскими\\ мифами\\ и\\ легендами\\.\\ Будь\\ готов\\ к\\ невероятным\\ приключениям\\!",
+    .delay = 200
+  },
+  {
+    .img = boy1_img,
+    .atr = boy1_atr,
+    .text = "О\\,\\ это\\ звучит\\ увлекательно\\!\\ Я\\ готов\\ отправиться\\ в\\ этот\\ удивительный\\ мир\\ легенд\\ и\\ мифов\\.\\ Подскажи\\,\\ с\\ чего\\ мне\\ начать\\?",
+    .delay = 200
+  },
+  {
+    .img = teller1_img,
+    .atr = teller1_atr,
+    .text = "Первая\\ легенда\\ рассказывает\\ о\\ Златоусте\\ и\\ Шайтан\\-Камне\\,\\ магическом\\ мече\\ и\\ волшебном камне\\, способных\\ исполнить\\ желания\\.\\ Легенда\\ гласит\\,\\ что\\ они\\ спрятаны\\ в\\ одном\\ из\\ подземных\\ лабиринтов\\.\\ Найди\\ меч\\ и\\ загадай\\ желание\\ \\-\\ и\\ будущее\\ твое\\ изменится.",
+    .delay = 200
+  },
+  {
+    .img = boy1_img,
+    .atr = boy1_atr,
+    .text = "Звучит\\ увлекательно\\!\\ Я\\ отправлюсь\\ в\\ поиски\\ Златоуста\\ и\\ Шайтан-Камня\\.\\ Как\\ я\\ найду\\ подземный\\ лабиринт\\?",
+    .delay = 200
+  },
+  {
+    .img = teller1_img,
+    .atr = teller1_atr,
+    .text = "Лучше\\ всего\\ начать\\ с\\ Гороховой\\ горы\\.\\ Ищи\\ там\\ древнюю\\ пещеру\\,\\ вход\\ в\\ лабиринт\\ должен\\ быть\\ рядом\\.\\ Будь\\ осторожен\\,\\ уральские\\ легенды\\ полны\\ опасностей\\,\\ но\\ твое\\ стойкое\\ сердце\\ поможет\\ тебе\\ преодолеть\\ все\\ трудности\\!",
+    .delay = 200
+  },
+  {
+    .img = boy1_img,
+    .atr = boy1_atr,
+    .text = "Спасибо\\ за\\ помощь\\!\\ Я\\ не\\ остановлюсь\\,\\ пока\\ не\\ найду\\ Златоуста\\ и\\ Шайтан\\-Камень\\!",
+    .delay = 200
+  },
+};
 
 void unpack(char *src, char *dst);
 void delay(unsigned int interval);
 void print(char *message, unsigned char x, unsigned char y);
-  
+void show_slide(slide_struct_t *slide);
+
 void main() {
   for (;;) {
-    memset(screen_buf + 0x1000, 0x00, 0x800);
-    memset(screen_attr_buf, 0x00, 0x200);
-    unpack(boy1_img, screen_buf);
-    unpack(boy1_atr, screen_attr_buf);
-    print("Вот\\ это\\ да\\,\\ какие\\ красивые\\ здания\\!\\ Это\\ же\\ Пермь\\,\\ город\\ с\\ бога\\-той\\ историей\\.", 0, 17);
-    delay(200);
-
-    memset(screen_buf + 0x1000, 0x00, 0x800);
-    memset(screen_attr_buf, 0x00, 0x200);
-    unpack(teller1_img, screen_buf);
-    unpack(teller1_atr, screen_attr_buf);
-    print("Здравствуй\\,\\ молодой\\ путешественник\\.\\ Вижу\\,\\ что\\ ты\\ ищешь\\ что\\-то\\ особенное\\.", 0, 17);
-    delay(200);
+    for (unsigned char slide = 0; slide < STORY_SIZE; slide++) {
+      show_slide(story + slide);
+    }
   }
+}
+
+void show_slide(slide_struct_t *slide){
+    memset(screen_buf + 0x1000, 0x00, 0x800);
+    memset(screen_attr_buf, 0x00, 0x200);
+    unpack(slide->img, screen_buf);
+    unpack(slide->atr, screen_attr_buf);
+    print(slide->text, 0, 17);
+    delay(slide->delay);
 }
 
 void print(char *message, unsigned char x, unsigned char y) {
