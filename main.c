@@ -10,7 +10,7 @@ __at (EMBEDDED_FONT_START) char font0[];
 
 void unpack(char *src, char *dst);
 void delay(unsigned int interval);
-void print(char *s, unsigned char x, unsigned char y);
+void print(char *message, unsigned char x, unsigned char y);
   
 void main() {
   for (;;) {
@@ -18,7 +18,7 @@ void main() {
     memset(screen_attr_buf, 0x00, 0x200);
     unpack(boy1_img, screen_buf);
     unpack(boy1_atr, screen_attr_buf);
-    print("Вот\\ это\\ да\\,\\ какие\\ красивые\\ здания\\!\\ Это\\ же\\ Пермь\\,\\ город\\ с\\ богатой\\ историей\\.", 0, 17);
+    print("Вот\\ это\\ да\\,\\ какие\\ красивые\\ здания\\!\\ Это\\ же\\ Пермь\\,\\ город\\ с\\ бога\\-той\\ историей\\.", 0, 17);
     delay(200);
 
     memset(screen_buf + 0x1000, 0x00, 0x800);
@@ -30,27 +30,50 @@ void main() {
   }
 }
 
-void print(char *s, unsigned char x, unsigned char y) {
-  char *p_scr = (char *)screen_line_addrs[y * 8];
-  char const *p_font = font1 - (0x10 * 8);
+void print(char *message, unsigned char x, unsigned char y) {
+  char *p_scr;
+  char const *p_font;
 
-  p_scr += x;
-  for (; *s!=0; s++) {
+  p_font = font;
+
+  for (; *message!=0; message++) {
     char const *p_char;
+    char s;
     
-    if (*s == '\\') {
-      p_font  = font0;
-      continue;
+    if (*message == '\n') {
+    	y++;
+        continue;
     }
     
-    p_char = p_font + (*s * 8);
+    if (*message == '\\') {
+      message++;
+      s = *message - ' ';
+    } else {
+      s = *message;
+    }
+
+    if (x == 0 && s == 0) continue;
+    
+    p_char = p_font + (s * 8);
+    p_scr = ((char *)screen_line_addrs[y * 8]);
+    p_scr += (x / 8);
     
     for (unsigned char i = 0; i < 8; i++) {
-      *(p_scr + i * 256) = *p_char;
-      p_char++;
+      char *p;
+      unsigned int z;
+      z = p_char[i];
+      z <<= (8 - (x % 8));
+      p = p_scr + (i * 256);
+      *p |= z >> 8;
+      p++;
+      *p |= z;
     }
-    p_scr++;
-    p_font = font1 - (0x10 * 8);
+    if (x >= 31 * 8) {
+     y++;
+     x = 0; 
+    } else {
+      x += font_width[s];
+    }
   }                                                                                                                                                                                                                
 }                                                                                                                                                                                                                  
 
