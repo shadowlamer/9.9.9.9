@@ -6,6 +6,9 @@
 #include "boy1_atr.h"
 #include "boy1_img.h"
 
+#include "boy2_atr.h"
+#include "boy2_img.h"
+
 #include "oldman1_atr.h"
 #include "oldman1_img.h"
 
