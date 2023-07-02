@@ -2,16 +2,24 @@
 
 #include "scr_addr.h"
 #include "font.h"
-#include "assets.h"
+
+#include "boy1_atr.h"
+#include "boy1_img.h"
+
+#include "oldman1_atr.h"
+#include "oldman1_img.h"
+
+#include "teller1_atr.h"
+#include "teller1_img.h"
 
 #define STORY_SIZE 9
 
-typedef struct {                                                                                                                                                                                                   
+typedef struct {
   unsigned char *img;
   unsigned char *atr;
   char *text;
   unsigned int delay;
-} slide_struct_t;     
+} slide_struct_t;
 
 __at (SCREEN_BUFFER_START) char screen_buf[0x1800];
 __at (ATTR_SCREEN_BUFFER_START) char screen_attr_buf[0x300];
@@ -139,22 +147,22 @@ void print(char *message, unsigned char x, unsigned char y) {
     } else {
       x += font_width[s];
     }
-  }                                                                                                                                                                                                                
-}                                                                                                                                                                                                                  
+  }
+}
 
 void unpack(char *src, char *dst) {
 (void) src, dst;
 
   __asm
-  ld ix, #4                                                                                                                                                                                                        
-  add ix, sp                                                                                                                                                                                                       
+  ld ix, #4
+  add ix, sp
 
-  ld l, 0(ix)                                                                                                                                                                                                      
+  ld l, 0(ix)
   ld h, 1(ix)
   ld e, 2(ix)
   ld d, 3(ix)
   call dzx0_standard
-  __endasm;  
+  __endasm;
   }
 
 /*; -----------------------------------------------------------------------------
