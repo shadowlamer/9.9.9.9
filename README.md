@@ -179,3 +179,16 @@ GPT:
 <img height="192" src="assets/src/third_test.gif" width="256"/>
 
 [Быстрый тест](https://github.com/shadowlamer/zxrenai/tree/bc15d85c6fb8d4681925f474cda9df31f2ceca98)
+
+## День пятый
+
+Рефакторинг репозитория.
+
+## День седьмой
+
+Пытаюсь сгенерировать картинки для следующей сцены
+
+<img height="384" src="assets/src/boy_and_old_man_acid.png" width="639"/>
+
+<img height="192" src="assets/src/boy2_acid_zx.png" width="256"/>
+<img height="192" src="assets/src/oldman_acid.png" width="256"/>
